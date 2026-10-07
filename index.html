@@ -7,51 +7,27 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex items-center justify-center p-4 font-sans">
-    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full border border-slate-100">
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full border border-slate-100">
         <div class="text-center mb-8">
-            <h1 class="text-3xl font-extrabold text-slate-800">StoreKey Gen</h1>
-            <p class="text-sm text-slate-500 mt-2">Generate Android .jks keystores securely via GitHub Actions. Keys are never saved to the repo.</p>
+            <h1 class="text-3xl font-extrabold text-slate-800">1-Click JKS Gen</h1>
+            <p class="text-sm text-slate-500 mt-2">Generate your .jks instantly.</p>
         </div>
         
         <form id="keyForm" class="space-y-5">
             <div>
-                <label class="block text-sm font-semibold text-slate-700">GitHub PAT (Requires repo scope)</label>
-                <input type="password" id="pat" required placeholder="ghp_..." class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700">GitHub Username</label>
-                    <input type="text" id="username" required class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700">Repo Name</label>
-                    <input type="text" id="repo" value="StoreKey-Gen" required class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors">
-                </div>
+                <label class="block text-sm font-semibold text-slate-700">GitHub PAT</label>
+                <input type="password" id="pat" required placeholder="Paste ghp_ token here" class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors">
+                <p class="text-[10px] text-slate-400 mt-1 leading-tight">Required. We cannot hardcode this securely on a public webpage.</p>
             </div>
             <div>
-                <label class="block text-sm font-semibold text-slate-700">Key Alias</label>
-                <input type="text" id="alias" value="raksha" required class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors">
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700">Store Password</label>
-                    <input type="password" id="storepass" required minlength="6" class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700">Key Password</label>
-                    <input type="password" id="keypass" required minlength="6" class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors">
-                </div>
-            </div>
-            <div>
-                <label class="block text-sm font-semibold text-slate-700">Distinguished Name</label>
-                <input type="text" id="dname" value="CN=Android Developer, O=App Dev, C=IN" required class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors">
+                <label class="block text-sm font-semibold text-slate-700">Keystore Password</label>
+                <input type="password" id="password" required minlength="6" placeholder="Min 6 characters" class="mt-1 block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors">
             </div>
             
-            <button type="submit" id="submitBtn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all transform hover:-translate-y-0.5">
-                Generate Keystore
+            <button type="submit" id="submitBtn" class="w-full py-3 px-4 rounded-lg shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 transition-all transform hover:-translate-y-0.5">
+                Download .jks
             </button>
         </form>
-
         <div id="statusBox" class="mt-6 hidden p-4 rounded-lg bg-slate-50 border border-slate-200">
             <div id="status" class="text-sm font-medium text-slate-700 text-center"></div>
         </div>
@@ -65,23 +41,23 @@
             const status = document.getElementById('status');
             
             btn.disabled = true;
-            btn.classList.add('opacity-75', 'cursor-not-allowed');
-            btn.textContent = 'Triggering Workflow...';
+            btn.textContent = 'Generating...';
             statusBox.classList.remove('hidden');
-            status.textContent = 'Sending secure request to GitHub...';
+            status.textContent = 'Triggering secure generator...';
 
             const pat = document.getElementById('pat').value.trim();
-            const owner = document.getElementById('username').value.trim();
-            const repo = document.getElementById('repo').value.trim();
+            const pass = document.getElementById('password').value;
+            const owner = "RD7890";
+            const repo = "StoreKey-Gen";
+            
             const inputs = {
-                alias: document.getElementById('alias').value.trim(),
-                storepass: document.getElementById('storepass').value,
-                keypass: document.getElementById('keypass').value,
-                dname: document.getElementById('dname').value.trim()
+                alias: "upload",
+                storepass: pass,
+                keypass: pass,
+                dname: "CN=Android Developer, O=App Dev, C=IN"
             };
 
             try {
-                // 1. Trigger workflow
                 let res = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/generate.yml/dispatches`, {
                     method: 'POST',
                     headers: {
@@ -91,73 +67,48 @@
                     },
                     body: JSON.stringify({ ref: 'main', inputs: inputs })
                 });
+                if (!res.ok) throw new Error('Auth failed. Check PAT.');
 
-                if (!res.ok) throw new Error('Failed to trigger workflow. Check your PAT and ensure it has "repo" scope.');
-
-                status.textContent = 'Workflow triggered! Waiting for GitHub runner to start...';
-                
-                // 2. Wait and find the latest run
-                await new Promise(r => setTimeout(r, 5000));
+                status.textContent = 'Generating on GitHub servers...';
+                await new Promise(r => setTimeout(r, 6000));
                 
                 res = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/runs?event=workflow_dispatch&per_page=1`, {
-                    headers: { 'Authorization': `Bearer ${pat}`, 'Accept': 'application/vnd.github.v3+json' }
-                });
-                const runsData = await res.json();
-                if (!runsData.workflow_runs || runsData.workflow_runs.length === 0) throw new Error('Could not find workflow run.');
-                
-                const runId = runsData.workflow_runs[0].id;
-                
-                // 3. Poll for completion
-                let isCompleted = false;
-                while (!isCompleted) {
-                    status.innerHTML = `Running remote keytool... <br><span class="text-xs text-slate-500">(Run ID: ${runId})</span>`;
-                    await new Promise(r => setTimeout(r, 4000));
-                    let statusRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/runs/${runId}`, {
-                        headers: { 'Authorization': `Bearer ${pat}`, 'Accept': 'application/vnd.github.v3+json' }
-                    });
-                    let statusData = await statusRes.json();
-                    if (statusData.status === 'completed') {
-                        isCompleted = true;
-                        if (statusData.conclusion !== 'success') throw new Error('Workflow failed! Check your Actions tab.');
-                    }
-                }
-
-                status.textContent = 'Keystore generated! Fetching secure download link...';
-
-                // 4. Get artifact URL
-                res = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/runs/${runId}/artifacts`, {
-                    headers: { 'Authorization': `Bearer ${pat}`, 'Accept': 'application/vnd.github.v3+json' }
-                });
-                const artifactData = await res.json();
-                if (artifactData.total_count === 0) throw new Error('No keystore artifact found.');
-                
-                const artifactDownloadUrl = artifactData.artifacts[0].archive_download_url;
-                
-                // 5. Download the artifact using the PAT (handles the API redirect securely)
-                status.textContent = 'Downloading zip to your device...';
-                const downloadRes = await fetch(artifactDownloadUrl, {
                     headers: { 'Authorization': `Bearer ${pat}` }
                 });
-                if (!downloadRes.ok) throw new Error('Failed to download artifact.');
+                const runsData = await res.json();
+                const runId = runsData.workflow_runs[0].id;
                 
+                let isCompleted = false;
+                while (!isCompleted) {
+                    await new Promise(r => setTimeout(r, 3000));
+                    let statusRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/runs/${runId}`, {
+                        headers: { 'Authorization': `Bearer ${pat}` }
+                    });
+                    let statusData = await statusRes.json();
+                    if (statusData.status === 'completed') isCompleted = true;
+                }
+
+                status.textContent = 'Downloading zip...';
+                res = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/runs/${runId}/artifacts`, {
+                    headers: { 'Authorization': `Bearer ${pat}` }
+                });
+                const artifactData = await res.json();
+                const dlUrl = artifactData.artifacts[0].archive_download_url;
+                
+                const downloadRes = await fetch(dlUrl, { headers: { 'Authorization': `Bearer ${pat}` } });
                 const blob = await downloadRes.blob();
-                const objectUrl = window.URL.createObjectURL(blob);
-                
-                // 6. Trigger direct download
                 const a = document.createElement('a');
-                a.href = objectUrl;
+                a.href = window.URL.createObjectURL(blob);
                 a.download = 'android-keystore.zip';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-
-                status.innerHTML = `<span class="text-green-600 font-bold">Success!</span><br>The zip file containing your <code class="bg-green-100 px-1 rounded">.jks</code> has been downloaded.`;
+                status.innerHTML = `<span class="text-green-600 font-bold">Downloaded!</span>`;
             } catch (err) {
-                status.innerHTML = `<span class="text-red-600 font-bold">Error:</span><br>${err.message}`;
+                status.innerHTML = `<span class="text-red-600">Error: ${err.message}</span>`;
             } finally {
                 btn.disabled = false;
-                btn.classList.remove('opacity-75', 'cursor-not-allowed');
-                btn.textContent = 'Generate New Keystore';
+                btn.textContent = 'Download .jks';
             }
         });
     </script>
