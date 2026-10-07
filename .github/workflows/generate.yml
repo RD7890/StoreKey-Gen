@@ -1,0 +1,35 @@
+name: Generate Keystore
+on:
+  workflow_dispatch:
+    inputs:
+      alias:
+        description: 'Key Alias'
+        required: true
+        default: 'key0'
+      storepass:
+        description: 'Keystore Password'
+        required: true
+      keypass:
+        description: 'Key Password'
+        required: true
+      dname:
+        description: 'Distinguished Name'
+        required: true
+        default: 'CN=Android Developer, O=My Company, C=US'
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate JKS
+        run: |
+          keytool -genkey -v -keystore signing-key.jks -keyalg RSA -keysize 2048 -validity 10000 \
+            -alias "${{ github.event.inputs.alias }}" \
+            -storepass "${{ github.event.inputs.storepass }}" \
+            -keypass "${{ github.event.inputs.keypass }}" \
+            -dname "${{ github.event.inputs.dname }}"
+      - name: Upload Keystore Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-keystore
+          path: signing-key.jks
+          retention-days: 1
